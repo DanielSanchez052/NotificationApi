@@ -3,7 +3,7 @@ import json
 from typing import Dict
 from django.conf import settings
 
-from apps.notifications import Notification, NotificationType
+from apps.notifications.models import Notification, NotificationType
 from .strategy import Strategy
 
 logger = logging.getLogger(__name__)
@@ -22,4 +22,4 @@ class Context():
         self._strategy = strategy
 
     def execute_notification(self, config, *args, **kwargs) -> None:
-        self._strategy.do_notification(self._strategy, config, *args, **kwargs)
+        return self._strategy.do_notification(self._strategy, config, *args, **kwargs)
