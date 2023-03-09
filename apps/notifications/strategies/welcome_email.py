@@ -3,6 +3,7 @@ from typing import Dict
 
 
 class WelcomeEmailStrategy(Strategy):
-    def do_notification(self, settings: Dict, *args, **kwargs):
+    def do_notification(self, *args, **kwargs):
         print("Email Sended")
-        return "Email Sended To "
+        var1 = kwargs["additionalProp1"]
+        return f"Email Sended To {var1}"

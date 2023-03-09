@@ -15,27 +15,8 @@ class NotificationSerializer(serializers.ModelSerializer):
         read_only_fields = ("result",)
 
     def create(self, validated_data):
-        try:
-            validated_data["notification_status"] = Notification.NotificationStatus.COMPLETE
+        validated_data["notification_status"] = Notification.NotificationStatus.MANUAL
 
-            result = self.execute_notification(
-                validated_data, validated_data["config"])
-            validated_data["result"] = f"Success: {result}"
-        except KeyError as ke:
-            validated_data[
-                "result"] = f"Ha ocurrido un error al tratar de obtener la informacion de {ke}"
-            validated_data["notification_status"] = Notification.NotificationStatus.CANCELED
-        except Exception as ex:
-            validated_data["result"] = f"Ha ocurrido un error inesperado {ex}"
-            Notification.NotificationStatus.CANCELED
-
-        return super().create(validated_data)
-
-    def execute_notification(self, data, *args, **kwargs):
-        config = data["notification_type"].config
-
-        notification_startegy = import_string(config["strategy"])
-
-        context = Context(notification_startegy)
-
-        return context.execute_notification(config, *args, **kwargs)
+        instance = super().create(validated_data)
+        new_instance = Notification.objects.execute_notification(instance)
+        return new_instance

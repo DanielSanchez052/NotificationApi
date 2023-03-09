@@ -32,6 +32,3 @@ class NotificationView(mixins.CreateModelMixin, GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
-    def perform_create(self, serializer):
-        super().perform_create(serializer)

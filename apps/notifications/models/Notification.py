@@ -1,5 +1,4 @@
 import uuid
-from jsonschema import validate, ValidationError
 
 from django.utils.module_loading import import_string
 from django.core.exceptions import ValidationError as Error
@@ -8,16 +7,34 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseModel
 from .NotificationType import NotificationType
-from ..strategy.strategy import CONFIGURATION_SCHEMA_BASE
 from apps.notifications.strategy.context import Context
+
+
+class NotificationManager(models.Manager):
+    def execute_notification(self, notification, *args, **kwargs):
+        notificationDb = self.get(id=notification.id)
+        try:
+            result = notificationDb.execute_notification()
+
+            notificationDb.result = f"Success: {result}"
+            notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
+        except Exception as ex:
+            notificationDb.result = f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
+            notificationDb.notification_status = Notification.NotificationStatus.CANCELED
+
+        finally:
+            notificationDb.save()
+
+        return notificationDb
 
 
 class Notification(BaseModel):
 
     class NotificationStatus(models.TextChoices):
         PENDING = "PENDING", _("PENDING")
-        COMPLETE = "COMPLETE", _("COMPLETED")
         CANCELED = "CANCELED", _("CANCELED")
+        MANUAL = "MANUAL", _("MANUAL")
+        COMPLETE = "COMPLETE", _("COMPLETED")
         IN_PROCESS = "IN_PROCESS", _("IN PROCESS")
 
         __empty__ = ('(unknown)')
@@ -38,6 +55,7 @@ class Notification(BaseModel):
     result = models.TextField(max_length=255, blank=True, null=True)
     config = models.JSONField(
         'config', blank=False, null=False)
+    objects = NotificationManager()
 
     def __str__(self) -> str:
         return f'{self.id}|{self.name}|{self.notification_status}|{self.result}'
@@ -47,10 +65,14 @@ class Notification(BaseModel):
         verbose_name = 'Notification'
         verbose_name_plural = 'Notification'
 
-    def execute_notification(self, *args, **kwargs):
+    def execute_notification(self):
+        if self.notification_status == self.NotificationStatus.COMPLETE or \
+                self.notification_status == self.NotificationStatus.IN_PROCESS:
+            return
+
         notification_startegy = import_string(
             self.notification_type.config["strategy"])
 
         context = Context(notification_startegy)
 
-        context.execute_notification(self.config, *args, **kwargs)
+        return context.execute_notification(self.config, **self.config)
