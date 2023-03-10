@@ -11,5 +11,5 @@ class NotificationTypeSerializer(serializers.ModelSerializer):
 
 
 class NotificationStatusSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.CharField(max_length=20)
     name = serializers.CharField(max_length=255)

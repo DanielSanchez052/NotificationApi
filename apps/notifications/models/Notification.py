@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseModel
+from apps.core.exeptions import NotificationException
 from .NotificationType import NotificationType
 from apps.notifications.strategy.context import Context
 
@@ -18,10 +19,11 @@ class NotificationManager(models.Manager):
 
             notificationDb.result = f"Success: {result}"
             notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
+        except NotificationException as ne:
+            raise ne
         except Exception as ex:
             notificationDb.result = f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
             notificationDb.notification_status = Notification.NotificationStatus.CANCELED
-
         finally:
             notificationDb.save()
 
@@ -45,7 +47,7 @@ class Notification(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=150, blank=True)
     description = models.TextField(max_length=255, blank=True, null=False)
-    user = models.UUIDField(blank=True, null=True)
+    user = models.CharField(max_length=36, blank=True, null=True)
     notification_status = models.CharField(
         max_length=20,
         choices=NotificationStatus.choices,
@@ -68,7 +70,9 @@ class Notification(BaseModel):
     def execute_notification(self):
         if self.notification_status == self.NotificationStatus.COMPLETE or \
                 self.notification_status == self.NotificationStatus.IN_PROCESS:
-            return
+            raise NotificationException(
+                message="La Notificacion no que se quiere ejecutar no tiene Un estado valido"
+            )
 
         notification_startegy = import_string(
             self.notification_type.config["strategy"])
