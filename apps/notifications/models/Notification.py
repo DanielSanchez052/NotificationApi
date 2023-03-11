@@ -1,4 +1,5 @@
 import uuid
+import json
 
 from django.utils.module_loading import import_string
 from django.core.exceptions import ValidationError as Error
@@ -14,15 +15,25 @@ from apps.notifications.strategy.context import Context
 class NotificationManager(models.Manager):
     def execute_notification(self, notification, *args, **kwargs):
         notificationDb = self.get(id=notification.id)
+        result = dict()
         try:
-            result = notificationDb.execute_notification()
+            result_execution = notificationDb.execute_notification()
 
-            notificationDb.result = f"Success: {result}"
+            result.update({"messages": [
+                result_execution
+            ]})
+
+            notificationDb.result = json.dumps(result)
             notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
         except NotificationException as ne:
             raise ne
         except Exception as ex:
-            notificationDb.result = f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
+
+            result.update(
+                {"errors": [
+                    f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
+                ]})
+            notificationDb.result = json.dumps(result)
             notificationDb.notification_status = Notification.NotificationStatus.CANCELED
         finally:
             notificationDb.save()
