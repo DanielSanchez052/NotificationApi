@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from django.utils.module_loading import import_string
 
 from apps.notifications.models import Notification
-from apps.notifications.strategy.context import Context
+from apps.core.serializers import DefaultResponse
 
 
 class NotificationSerializer(serializers.ModelSerializer):
     config = serializers.DictField(child=serializers.CharField())
+    result = DefaultResponse()
 
     class Meta:
         model = Notification

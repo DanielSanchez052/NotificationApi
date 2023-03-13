@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -8,6 +10,7 @@ from .serializers.general_serializer import NotificationTypeSerializer, Notifica
 from .serializers.NotificationSerializer import NotificationSerializer, NotificationSerializerQueue
 from apps.core.mixins import SerializerActionMixin
 from apps.core.exeptions import NotificationException
+from apps.core.serializers import DefaultResponse
 
 
 class GetNotificationType(ListAPIView):
@@ -69,8 +72,10 @@ class NotificationView(SerializerActionMixin,
 
         except NotificationException as ne:
             response = {
-                "errors": [
+                "error": True,
+                "messages": [
                     str(ne.message)
                 ]
             }
-        return Response(response, status=status.HTTP_200_OK)
+            serialize = DefaultResponse(response)
+        return Response(serialize.data, status=status.HTTP_200_OK)

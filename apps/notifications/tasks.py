@@ -23,6 +23,7 @@ class TaskLogs(Task):
 
 @shared_task(name="run_queued_notifications", base=TaskLogs)
 def run_notifications():
+    # execute notifications in pending
     notifications = Notification.objects.filter(
         notification_status=Notification.NotificationStatus.PENDING).order_by("created_at")
     for notification in notifications:
@@ -33,7 +34,7 @@ def run_notifications():
             if result_db:
                 try:
                     result_dict = json.loads(result_db)
-                    result_dict["errors"] += f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
+                    result_dict["messages"] += f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
                     notification.result = json.dumps(result_dict)
                     notification.save()
                 except:

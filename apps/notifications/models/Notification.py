@@ -19,21 +19,23 @@ class NotificationManager(models.Manager):
         try:
             result_execution = notificationDb.execute_notification()
 
-            result.update({"messages": [
-                result_execution
-            ]})
+            result.update({
+                "error": False,
+                "messages": [result_execution]})
 
-            notificationDb.result = json.dumps(result)
+            notificationDb.result = result
             notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
         except NotificationException as ne:
             raise ne
         except Exception as ex:
 
             result.update(
-                {"errors": [
-                    f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
-                ]})
-            notificationDb.result = json.dumps(result)
+                {
+                    "error": True,
+                    "messages": [
+                        f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
+                    ]})
+            notificationDb.result = result
             notificationDb.notification_status = Notification.NotificationStatus.CANCELED
         finally:
             notificationDb.save()
@@ -56,7 +58,6 @@ class Notification(BaseModel):
             return f'{self.name}'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=150, blank=True)
     description = models.TextField(max_length=255, blank=True, null=False)
     user = models.CharField(max_length=36, blank=True, null=True)
     notification_status = models.CharField(
