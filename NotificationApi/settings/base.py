@@ -37,14 +37,21 @@ BASE_APPS = [
 
 LOCAL_APPS = [
     "apps.core",
-    "apps.notifications"
+    "apps.notifications",
+    "apps.authentication_token",
 ]
 
 THIRD_APPS = [
     "rest_framework",
     "drf_yasg",
     "corsheaders",
-    "django_celery_beat"
+    "import_export",
+
+    # Tasks in background
+    "django_celery_beat",
+
+    # authentication
+    "rest_framework.authtoken"
 ]
 
 
@@ -133,13 +140,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         # 'rest_framework.permissions.DjangoModelPermissions',
-        # 'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.AllowAny',
     ),
     # 'DEFAULT_RENDERER_CLASSES': (
     #     'rest_framework.renderers.JSONRenderer',
@@ -158,3 +164,14 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# swagger config
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}
