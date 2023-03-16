@@ -6,11 +6,11 @@ from apps.core.serializers import DefaultResponse
 
 class NotificationSerializer(serializers.ModelSerializer):
     config = serializers.DictField(child=serializers.CharField())
-    result = DefaultResponse()
+    result = DefaultResponse(required=False, allow_null=True)
 
     class Meta:
         model = Notification
-        fields = ["id", "name", "description", "user",
+        fields = ["id", "description", "user",
                   "notification_type", "config", "result"]
         read_only_fields = ("result", "id",)
 
@@ -32,7 +32,7 @@ class NotificationSerializerQueue(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ["id", "name", "description", "user",
+        fields = ["id", "description", "user",
                   "notification_type", "config"]
         read_only_fields = ("id",)
         list_serializer_class = NotificationSerializerQueueList

@@ -72,7 +72,7 @@ class Notification(BaseModel):
     objects = NotificationManager()
 
     def __str__(self) -> str:
-        return f'{self.id}|{self.name}|{self.notification_status}|{self.result}'
+        return f'{self.id}|{self.notification_status}|{self.result}'
 
     class Meta:
         ordering = ["created_at"]

@@ -12,5 +12,5 @@ class DefaultResponse(serializers.Serializer):
 
     def to_representation(self, instance):
         if isinstance(instance, str):
-            instance_dict = literal_eval(instance)
-        return super().to_representation(instance_dict)
+            instance = literal_eval(instance)
+        return super().to_representation(instance)
