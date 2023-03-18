@@ -1,5 +1,5 @@
 import uuid
-import json
+from datetime import datetime
 
 from django.utils.module_loading import import_string
 from django.core.exceptions import ValidationError as Error
@@ -8,38 +8,46 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseModel
 from apps.core.exeptions import NotificationException
-from .NotificationType import NotificationType
 from apps.notifications.strategy.context import Context
+from apps.notifications import models as im
 
 
 class NotificationManager(models.Manager):
     def execute_notification(self, notification, *args, **kwargs):
         notificationDb = self.get(id=notification.id)
-        result = dict()
         try:
             result_execution = notificationDb.execute_notification()
 
-            result.update({
-                "error": False,
-                "messages": [result_execution]})
+            result = im.NotificationResults()
+            result.error = False
+            result.created_at = datetime.now()
+            result.messages = result_execution
+            result.notification = notificationDb
+            result.save()
 
-            notificationDb.result = result
             notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
         except NotificationException as ne:
-            raise ne
+
+            result = im.NotificationResults()
+            result.error = True
+            result.created_at = datetime.now()
+            result.messages = f"{ne.message}|{ne}"
+            result.notification = notificationDb
+            result.save()
+
+            notificationDb.notification_status = Notification.NotificationStatus.PENDING
         except Exception as ex:
 
-            result.update(
-                {
-                    "error": True,
-                    "messages": [
-                        f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
-                    ]})
-            notificationDb.result = result
+            result = im.NotificationResults()
+            result.error = True
+            result.created_at = datetime.now()
+            result.messages = f"ERROR NAME {type(ex).__name__}, args: {ex.args}, {ex}"
+            result.notification = notificationDb
+            result.save()
+
             notificationDb.notification_status = Notification.NotificationStatus.CANCELED
         finally:
             notificationDb.save()
-
         return notificationDb
 
 
@@ -65,14 +73,13 @@ class Notification(BaseModel):
         choices=NotificationStatus.choices,
         default=NotificationStatus.PENDING)
     notification_type = models.ForeignKey(
-        NotificationType, on_delete=models.CASCADE)
-    result = models.TextField(max_length=255, blank=True, null=True)
+        im.NotificationType, on_delete=models.CASCADE)
     config = models.JSONField(
         'config', blank=False, null=False)
     objects = NotificationManager()
 
     def __str__(self) -> str:
-        return f'{self.id}|{self.notification_status}|{self.result}'
+        return f'{self.id}|{self.notification_status}'
 
     class Meta:
         ordering = ["created_at"]
@@ -82,6 +89,7 @@ class Notification(BaseModel):
     def execute_notification(self):
         if self.notification_status == self.NotificationStatus.COMPLETE or \
                 self.notification_status == self.NotificationStatus.IN_PROCESS:
+
             raise NotificationException(
                 message="La Notificacion no que se quiere ejecutar no tiene Un estado valido"
             )
@@ -91,4 +99,8 @@ class Notification(BaseModel):
 
         context = Context(notification_startegy)
 
-        return context.execute_notification(self.config, **self.config)
+        kwargs = {}
+        kwargs.update(self.config)
+        kwargs.update({"notification": self})
+
+        return context.execute_notification(self.config, **kwargs)

@@ -7,7 +7,7 @@ from rest_framework.generics import ListAPIView
 
 from .models import Notification
 from .serializers.general_serializer import NotificationTypeSerializer, NotificationStatusSerializer
-from .serializers.NotificationSerializer import NotificationSerializer, NotificationSerializerQueue
+from .serializers.NotificationSerializer import NotificationSerializer, NotificationSerializerQueue, NotificationUpdateSerializer
 from apps.core.mixins import SerializerActionMixin
 from apps.core.exeptions import NotificationException
 from apps.core.serializers import DefaultResponse
@@ -65,8 +65,14 @@ class NotificationView(SerializerActionMixin,
         instance = self.get_object()
 
         try:
-            notification = Notification.objects.execute_notification(
-                instance)
+            # update Notification
+            update_serializer = NotificationUpdateSerializer(
+                instance, data=request.data)
+            update_serializer.is_valid(raise_exception=True)
+            updated = update_serializer.save()
+
+            # execute notification
+            notification = Notification.objects.execute_notification(updated)
             serializer = self.get_serializer(notification)
             return Response(serializer.data)
 

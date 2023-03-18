@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from apps.notifications.models import Notification, NotificationType
+from apps.notifications.models import Notification, NotificationType, NotificationResults
 from .forms import NotificationAdminForm, NotificationTypeAdminForm
 from .strategy.strategy import CONFIGURATION_SCHEMA_BASE
 
@@ -29,7 +29,25 @@ class NotificationTypeModelAdmin(ImportExportModelAdmin):
         return form
 
 
+@admin.register(NotificationResults)
+class NotificationResultsAdmin(admin.ModelAdmin):
+    list_filter = ("error",)
+
+
+class ResultsInline(admin.TabularInline):
+    model = NotificationResults
+
+
 @admin.register(Notification)
 class NotificationModelAdmin(admin.ModelAdmin):
+    search_fields = ["id", "description", "user"]
+    list_filter = ("id", "notification_status")
     form = NotificationAdminForm
     resource_classes = [NotificationResource]
+    inlines = [ResultsInline]
+    actions = ["change_to_pending"]
+
+    @admin.action(description="Change Nototifications status to pending")
+    def change_to_pending(self, request, queryset):
+        queryset.update(
+            notification_status=Notification.NotificationStatus.PENDING)

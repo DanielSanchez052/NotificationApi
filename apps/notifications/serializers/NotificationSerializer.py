@@ -1,24 +1,37 @@
 from rest_framework import serializers
+from ast import literal_eval
 
-from apps.notifications.models import Notification
-from apps.core.serializers import DefaultResponse
+from apps.notifications.models import Notification, NotificationResults
+
+
+class ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotificationResults
+        fields = ["messages", "error", "created_at"]
 
 
 class NotificationSerializer(serializers.ModelSerializer):
     config = serializers.DictField(child=serializers.CharField())
-    result = DefaultResponse(required=False, allow_null=True)
+    results = ResultSerializer(
+        read_only=True, many=True)
 
     class Meta:
         model = Notification
-        fields = ["id", "description", "user",
-                  "notification_type", "config", "result"]
-        read_only_fields = ("result", "id",)
+        fields = ["id", "description", "user", "notification_status",
+                  "notification_type", "config", "results"]
+        read_only_fields = ("results", "id", "notification_status")
 
     def create(self, validated_data):
         validated_data["notification_status"] = Notification.NotificationStatus.MANUAL
         instance = super().create(validated_data)
         new_instance = Notification.objects.execute_notification(instance)
         return new_instance
+
+
+class NotificationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["description", "user", "config"]
 
 
 class NotificationSerializerQueueList(serializers.ListSerializer):

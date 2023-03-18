@@ -8,7 +8,7 @@ class NotificationAdminForm (forms.ModelForm):
     class Meta:
         model = Notification
         fields = [
-            'user', 'notification_status', 'notification_type', 'description', 'result', 'config']
+            'user', 'notification_status', 'notification_type', 'description', 'config']
 
     class Media:
         js = ('js/notification_admin.js',)
