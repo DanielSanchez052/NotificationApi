@@ -1,13 +1,10 @@
 import json
+from datetime import datetime
 
 from celery import shared_task, Task
-from django.conf import settings
-from django.utils.module_loading import import_string
 from celery.utils.log import get_task_logger
 
-from apps.notifications.models import Notification
-from .strategy.context import Context
-
+from apps.notifications.models import Notification, NotificationResults
 logger = get_task_logger(__name__)
 
 
@@ -32,10 +29,11 @@ def run_notifications():
         except Exception as ex:
             result_db = notification.result
             if result_db:
-                try:
-                    result_dict = json.loads(result_db)
-                    result_dict["messages"] += f"ERROR NAME {type(ex).__name__}, args: {ex.args}"
-                    notification.result = json.dumps(result_dict)
-                    notification.save()
-                except:
-                    pass
+                result = NotificationResults()
+                result.error = True
+                result.created_at = datetime.now()
+                result.messages = f"ERROR NAME {type(ex).__name__}, args: {ex.args}, {ex}"
+                result.notification = notification
+
+                notification.save()
+                result.save()
