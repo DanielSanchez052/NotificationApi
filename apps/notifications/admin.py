@@ -45,9 +45,15 @@ class NotificationModelAdmin(admin.ModelAdmin):
     form = NotificationAdminForm
     resource_classes = [NotificationResource]
     inlines = [ResultsInline]
-    actions = ["change_to_pending"]
+    actions = ["change_to_pending", "change_to_canceled"]
 
     @admin.action(description="Change Nototifications status to pending")
     def change_to_pending(self, request, queryset):
         queryset.update(
             notification_status=Notification.NotificationStatus.PENDING)
+
+    @admin.action(description="Cancel Notifications Queued")
+    def change_to_canceled(self, request, queryset):
+        queryset.update(
+            notification_status=Notification.NotificationStatus.CANCELED)
+         
