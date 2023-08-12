@@ -2,9 +2,9 @@ import os
 from NotificationApi.settings.base import * # NOQA
 from decouple import config
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', default=True, cast=bool)
+DEBUG = os.environ.get('DEBUG', default=True)
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', cast=lambda f: [s.strip() for s in f.split(',')])
+ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS').split(',')]
 
 # CSRF config
 CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]

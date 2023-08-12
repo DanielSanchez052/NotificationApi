@@ -7,7 +7,7 @@ from decouple import config
 
 def main():
     """Run administrative tasks."""
-    debug = config('DEBUG', default=False, cast=bool)
+    debug = os.environ.get('DEBUG', default=False)
     settings_module = 'NotificationApi.settings.production' if not debug else 'NotificationApi.settings.local'
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)

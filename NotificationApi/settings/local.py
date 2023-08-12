@@ -1,10 +1,11 @@
+import os
 from NotificationApi.settings.base import * # NOQA
 from decouple import config
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = os.environ.get('DEBUG', default=True)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda f: [s.strip() for s in f.split(',')])
+ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS').split(',')]
 
 # celery and redis
 CELERY_BROKER_URL = 'redis://redis:6379'
