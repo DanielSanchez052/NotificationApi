@@ -10,14 +10,14 @@ class NotificationAdminForm (forms.ModelForm):
         fields = [
             'user', 'notification_status', 'notification_type', 'description', 'config']
 
-    class Media:
-        js = ('js/notification_admin.js',)
+    # class Media:
+    #     js = ('js/notification_admin.js',)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['notification_type'].widget.attrs.update({
-            "onchange": "()=>{console.log('whats up')}"
-        })
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['notification_type'].widget.attrs.update({
+    #         "onchange": "()=>{console.log('whats up')}"
+    #     })
 
 
 class NotificationTypeAdminForm (forms.ModelForm):
