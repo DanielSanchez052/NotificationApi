@@ -67,5 +67,7 @@ RUN chown -R app:app $APP_HOME
 # change to the app user
 USER app
 
+CMD  ["sh","/home/app/NotificationApi/entrypoint.prod.sh"]
+
 # # gunicorn
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
+# CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
