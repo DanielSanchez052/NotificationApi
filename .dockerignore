@@ -16,6 +16,8 @@
 .vagrant/
 __pycache__
 .vscode
+.env
+.env.prod
 dist
 docs
 env
