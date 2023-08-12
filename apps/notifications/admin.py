@@ -19,6 +19,7 @@ class NotificationResource(resources.ModelResource):
 
 @admin.register(NotificationType)
 class NotificationTypeModelAdmin(ImportExportModelAdmin):
+    list_display = ("id", "name" ,"is_active")
     form = NotificationTypeAdminForm
     resource_classes = [NotificationTypeResource]
 
@@ -31,6 +32,7 @@ class NotificationTypeModelAdmin(ImportExportModelAdmin):
 
 @admin.register(NotificationResults)
 class NotificationResultsAdmin(admin.ModelAdmin):
+    list_display = ("id", "messages", "error", "notification", "created_at")
     list_filter = ("error",)
 
 
@@ -40,6 +42,7 @@ class ResultsInline(admin.TabularInline):
 
 @admin.register(Notification)
 class NotificationModelAdmin(admin.ModelAdmin):
+    list_display = ("id", "description", "user", "notification_status" , "notification_type", "created_at", "modified_at")
     search_fields = ["id", "description", "user"]
     list_filter = ("id", "notification_status")
     form = NotificationAdminForm
@@ -56,4 +59,4 @@ class NotificationModelAdmin(admin.ModelAdmin):
     def change_to_canceled(self, request, queryset):
         queryset.update(
             notification_status=Notification.NotificationStatus.CANCELED)
-         
+    

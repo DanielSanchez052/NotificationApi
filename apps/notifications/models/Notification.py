@@ -91,7 +91,7 @@ class Notification(BaseModel):
                 self.notification_status == self.NotificationStatus.IN_PROCESS:
 
             raise NotificationException(
-                message="La Notificacion no que se quiere ejecutar no tiene Un estado valido"
+                message="La Notificacion no que se puede ejecutar no tiene Un estado valido"
             )
 
         notification_startegy = import_string(
