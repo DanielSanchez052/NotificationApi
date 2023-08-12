@@ -5,7 +5,7 @@ from decouple import config
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', default=True)
 
-ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS').split(',')]
+ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
 # celery and redis
 CELERY_BROKER_URL = 'redis://redis:6379'

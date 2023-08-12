@@ -4,7 +4,7 @@ from decouple import config
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', default=True)
 
-ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS').split(',')]
+ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
 # CSRF config
 CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]
