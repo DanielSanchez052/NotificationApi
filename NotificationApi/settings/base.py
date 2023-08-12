@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 BASE_APPS = [
@@ -132,11 +132,11 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR.parent, 'staticfiles')]
 
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'staticfiles')
 
-MEDIA_URL = config('MEDIA_URL', default='/media/')
-MEDIA_ROOT = os.path.join(BASE_DIR, config('MEDIA_ROOT', default='media'))
+MEDIA_URL = os.environ.get('MEDIA_URL', default='/media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, os.environ.get('MEDIA_ROOT', default='media'))
 
-STATIC_LOCATION = config('STATIC_ROOT', default='staticfiles')
-MEDIA_LOCATION = config('MEDIA_ROOT', default='media')
+STATIC_LOCATION = os.environ.get('STATIC_ROOT', default='staticfiles')
+MEDIA_LOCATION = os.environ.get('MEDIA_ROOT', default='media')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/

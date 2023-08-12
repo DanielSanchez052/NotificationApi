@@ -1,9 +1,10 @@
+import os
 from NotificationApi.settings.base import * # NOQA
 from decouple import config
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = os.environ.get('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda f: [s.strip() for s in f.split(',')])
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', cast=lambda f: [s.strip() for s in f.split(',')])
 
 # CSRF config
 CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]
@@ -14,18 +15,18 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]
 
 DATABASES = {
     'default': {
-        'ENGINE': config("SQL_ENGINE"),
-        'NAME': config("SQL_DATABASE"),
-        'HOST': config("SQL_HOST"),
-        'USER': config("SQL_USER"),
-        'PASSWORD': config("SQL_PASSWORD"),
-        'PORT': config("SQL_PORT")
+        'ENGINE': os.environ.get("SQL_ENGINE"),
+        'NAME': os.environ.get("SQL_DATABASE"),
+        'HOST': os.environ.get("SQL_HOST"),
+        'USER': os.environ.get("SQL_USER"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD"),
+        'PORT': os.environ.get("SQL_PORT")
     }
 }
 
 # celery and redis
-CELERY_BROKER_URL = config("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
