@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.db import models
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from django_json_widget.widgets import JSONEditorWidget
 
 from apps.notifications.models import Notification, NotificationType, NotificationResults
 from .forms import NotificationAdminForm, NotificationTypeAdminForm
@@ -22,6 +24,9 @@ class NotificationTypeModelAdmin(ImportExportModelAdmin):
     list_display = ("id", "name" ,"is_active")
     form = NotificationTypeAdminForm
     resource_classes = [NotificationTypeResource]
+    formfield_overrides = {
+        models.JSONField: {'widget': JSONEditorWidget},
+    }
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -49,6 +54,10 @@ class NotificationModelAdmin(admin.ModelAdmin):
     resource_classes = [NotificationResource]
     inlines = [ResultsInline]
     actions = ["change_to_pending", "change_to_canceled"]
+    formfield_overrides = {
+        models.JSONField: {'widget': JSONEditorWidget},
+    }
+
 
     @admin.action(description="Change Nototifications status to pending")
     def change_to_pending(self, request, queryset):

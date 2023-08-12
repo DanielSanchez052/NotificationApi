@@ -44,10 +44,11 @@ LOCAL_APPS = [
 THIRD_APPS = [
     "rest_framework",
     'django_filters',
-    "drf_yasg",
     "corsheaders",
+    #Admin
+    "drf_yasg",
     "import_export",
-
+    "django_json_widget",
     # Tasks in background
     "django_celery_beat",
 
