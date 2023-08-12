@@ -1,7 +1,7 @@
 from rest_framework import routers
 from django.urls import path
 
-from .views import GetNotificationType, GetNotificationStatus, NotificationView, NotificationQueueView, ListNotificationView
+from .views import GetNotificationType, GetNotificationStatus, NotificationView, NotificationQueueView
 
 router = routers.DefaultRouter()
 router.register(r'notification', NotificationQueueView, basename='notification_queue')
@@ -13,5 +13,4 @@ urlpatterns = [
          GetNotificationType.as_view(), name='list_notification_type'),
      path('notification_status/', GetNotificationStatus.as_view(),
          name='list_notification_status'),
-     path('notification/', ListNotificationView.as_view(), name="list_notifications")
 ] + router.urls

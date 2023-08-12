@@ -5,6 +5,7 @@ from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView
+from rest_framework.settings import api_settings
 
 from .models import Notification
 from .serializers.general_serializer import NotificationTypeSerializer, NotificationStatusSerializer
@@ -52,8 +53,9 @@ class NotificationQueueView(SerializerActionMixin, viewsets.GenericViewSet):
         try:
             serializer.save()
             headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        except:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as ex:
+            print(ex)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=["post"], detail=True, url_path=r"execute-notification")
@@ -82,26 +84,21 @@ class NotificationQueueView(SerializerActionMixin, viewsets.GenericViewSet):
             serialize = DefaultResponse(response)
         return Response(serialize.data, status=status.HTTP_200_OK)
 
+    
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
 
 class NotificationView(SerializerActionMixin,
-                        viewsets.GenericViewSet,
+                        mixins.ListModelMixin,
+                        mixins.CreateModelMixin,
                         mixins.RetrieveModelMixin,
-                        mixins.CreateModelMixin):
-    serializer_classes = {
-        # "create": NotificationSerializer,
-        # "retrieve": NotificationSerializer,
-    }
-    serializer_class = NotificationSerializer
+                        viewsets.GenericViewSet):
 
+    serializer_class = NotificationSerializer
+    filterset_fields = ['notification_status','user','notification_type']
     queryset = Notification.objects.all()
 
-    def get_serializer(self, *args, **kwargs):
-        if isinstance(kwargs.get("data", {}), list):
-            kwargs["many"] = True
-        return super().get_serializer(*args, **kwargs)
 
-class ListNotificationView(ListAPIView):
-    serializer_class = NotificationSerializer
-    queryset = serializer_class.Meta.model.objects.all()
-    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filterset_fields = ['notification_status','user','notification_type']
