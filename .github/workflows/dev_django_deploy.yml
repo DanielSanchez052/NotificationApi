@@ -30,7 +30,7 @@ jobs:
       with:
         command: c
         cwd: "./"
-        files: ./*
+        files: /
         outPath: deploy.tar
 
     - name: Deploy App to CapRover
