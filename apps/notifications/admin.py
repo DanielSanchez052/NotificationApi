@@ -21,7 +21,7 @@ class NotificationResource(resources.ModelResource):
 
 @admin.register(NotificationType)
 class NotificationTypeModelAdmin(ImportExportModelAdmin):
-    list_display = ("id", "name" ,"is_active")
+    list_display = ("id", "name", "is_active")
     form = NotificationTypeAdminForm
     resource_classes = [NotificationTypeResource]
     formfield_overrides = {
@@ -47,7 +47,7 @@ class ResultsInline(admin.TabularInline):
 
 @admin.register(Notification)
 class NotificationModelAdmin(admin.ModelAdmin):
-    list_display = ("id", "description", "user", "notification_status" , "notification_type", "created_at", "modified_at")
+    list_display = ("id", "description", "user", "notification_status", "notification_type", "created_at", "modified_at")
     search_fields = ["id", "description", "user"]
     list_filter = ("id", "notification_status")
     form = NotificationAdminForm
@@ -58,7 +58,6 @@ class NotificationModelAdmin(admin.ModelAdmin):
         models.JSONField: {'widget': JSONEditorWidget},
     }
 
-
     @admin.action(description="Change Nototifications status to pending")
     def change_to_pending(self, request, queryset):
         queryset.update(
@@ -68,4 +67,3 @@ class NotificationModelAdmin(admin.ModelAdmin):
     def change_to_canceled(self, request, queryset):
         queryset.update(
             notification_status=Notification.NotificationStatus.CANCELED)
-    

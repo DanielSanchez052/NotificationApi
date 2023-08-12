@@ -53,7 +53,7 @@ class NotificationQueueView(SerializerActionMixin, viewsets.GenericViewSet):
         try:
             serializer.save()
             headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as ex:
             print(ex)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -84,21 +84,15 @@ class NotificationQueueView(SerializerActionMixin, viewsets.GenericViewSet):
             serialize = DefaultResponse(response)
         return Response(serialize.data, status=status.HTTP_200_OK)
 
-    
     def get_success_headers(self, data):
         try:
             return {'Location': str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
 
-class NotificationView(SerializerActionMixin,
-                        mixins.ListModelMixin,
-                        mixins.CreateModelMixin,
-                        mixins.RetrieveModelMixin,
-                        viewsets.GenericViewSet):
+
+class NotificationView(SerializerActionMixin, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
     serializer_class = NotificationSerializer
-    filterset_fields = ['notification_status','user','notification_type']
+    filterset_fields = ['notification_status', 'user', 'notification_type']
     queryset = Notification.objects.all()
-
-

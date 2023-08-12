@@ -16,7 +16,7 @@ from decouple import config
 from .adminConfig import JAZZMIN_SETTINGS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -45,13 +45,12 @@ THIRD_APPS = [
     "rest_framework",
     'django_filters',
     "corsheaders",
-    #Admin
-    "drf_yasg",
-    "import_export",
+    # Admin
+    'drf_yasg',
+    'import_export',
     "django_json_widget",
     # Tasks in background
     "django_celery_beat",
-
     # authentication
     "rest_framework.authtoken"
 ]
@@ -66,6 +65,7 @@ INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -128,11 +128,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = ['static']
-STATIC_ROOT = os.path.join(BASE_DIR, config(
-    'STATIC_ROOT', default='static_root'))
+STATICFILES_DIRS = [os.path.join(BASE_DIR.parent, 'staticfiles')]
+
+STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'staticfiles')
+
 MEDIA_URL = config('MEDIA_URL', default='/media/')
-MEDIA_ROOT = os.path.join(BASE_DIR, config('MEDIA_ROOT', default='media_root'))
+MEDIA_ROOT = os.path.join(BASE_DIR, config('MEDIA_ROOT', default='media'))
+
+STATIC_LOCATION = config('STATIC_ROOT', default='staticfiles')
+MEDIA_LOCATION = config('MEDIA_ROOT', default='media')
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

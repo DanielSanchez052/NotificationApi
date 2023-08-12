@@ -1,8 +1,5 @@
 FROM python:3.10.8-slim
 
-#copy project
-COPY . /code/
-
 #set work directory
 WORKDIR /code
 
@@ -15,8 +12,17 @@ RUN pip install --upgrade pip
 COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 
-# running migrations
-#RUN python manage.py migrate
+# copy entrypoint.sh
+# COPY ./entrypoint.sh .
+# RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
+# RUN chmod +x /usr/src/app/entrypoint.sh
 
-# gunicorn
+#copy project
+COPY . /code/
+
+
+# run entrypoint.sh
+# ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+
+# # gunicorn
 CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]

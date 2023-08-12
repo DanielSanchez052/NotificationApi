@@ -1,12 +1,12 @@
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "PointsApp",
+    "site_title": "Notifications API",
 
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "PointsApp",
+    "site_header": "Notifications API",
 
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "PointsApp",
+    "site_brand": "Notifications API",
 
     # Logo to use for your site, must be present in static files, used for brand on top left
     "site_logo": "logo.png",
@@ -24,10 +24,10 @@ JAZZMIN_SETTINGS = {
     "site_icon": None,
 
     # Welcome text on the login screen
-    "welcome_sign": "Welcome to the PointsApp",
+    "welcome_sign": "Welcome to the Notifications API",
 
     # Copyright on the footer
-    "copyright": "PointsApp",
+    "copyright": "Notifications",
 
     # List of model admins to search from the search bar, search bar omitted if excluded
     # If you want to use a single search field you dont need to use a list, you can use a simple string
@@ -44,7 +44,7 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
 
         # Url that gets reversed (Permissions can be added)
-        {"name": "Home",  "url": "admin:index",
+        {"name": "Home", "url": "admin:index",
             "permissions": [""]},
 
         # external url that opens in a new window (Permissions can be added)

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class BaseModel(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateField(
@@ -8,7 +9,6 @@ class BaseModel(models.Model):
         'modified at', auto_now_add=False, auto_now=True)
     deleted_at = models.DateField(
         'deleted at', auto_now_add=False, auto_now=True)
-
 
     class Meta:
         abstract = True

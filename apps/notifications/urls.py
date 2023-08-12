@@ -9,8 +9,6 @@ router.register(r'notification', NotificationView, basename='notification')
 
 
 urlpatterns = [
-     path('notification_type/',
-         GetNotificationType.as_view(), name='list_notification_type'),
-     path('notification_status/', GetNotificationStatus.as_view(),
-         name='list_notification_status'),
+    path('notification_type/', GetNotificationType.as_view(), name='list_notification_type'),
+    path('notification_status/', GetNotificationStatus.as_view(), name='list_notification_status'),
 ] + router.urls

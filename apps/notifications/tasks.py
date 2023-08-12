@@ -25,15 +25,15 @@ class TaskLogs(Task):
 @shared_task(name="run_queued_notifications", base=TaskLogs)
 def run_notifications():
     # execute notifications in pending
-    logger.info(f"Start run notification queued task")
-    
+    logger.info("Start run notification queued task")
+
     notifications = Notification.objects.filter(
         notification_status=Notification.NotificationStatus.PENDING).order_by("created_at")[:settings.NOTIFICATIONS_QUEUE_BATCH]
-    
+
     for notification in notifications:
         try:
             Notification.objects.execute_notification(notification)
-            
+
         except Exception as ex:
             result_db = notification.result
             if result_db:
@@ -45,5 +45,5 @@ def run_notifications():
 
                 notification.save()
                 result.save()
-                
+
     return notifications.count()

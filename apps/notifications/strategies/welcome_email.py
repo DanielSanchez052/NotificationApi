@@ -35,6 +35,6 @@ class WelcomeEmailStrategy(Strategy):
 
     def validate_required_fields(self, settings: Dict):
         fields_required = ["name", "email", "password"]
-        if not all(field in fields_required for field in settings.keys()):
+        if not all(field in settings.keys() for field in fields_required):
             raise NotificationException(
                 message="el name, email y password son campos requeridos")
