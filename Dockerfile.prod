@@ -69,7 +69,7 @@ USER app
 
 # CMD  ["sh","/home/app/NotificationApi/entrypoint.prod.sh"]
 RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate --noinpu
+# RUN python manage.py migrate --noinput
 
 # # gunicorn
 CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
