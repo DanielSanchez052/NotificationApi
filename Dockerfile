@@ -27,6 +27,7 @@ COPY . /code/
 # # gunicorn
 # CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["sh","./entrypoint.sh"]
 
-CMD ["/start.sh"]
+
+CMD ["sh", "./start.sh"]

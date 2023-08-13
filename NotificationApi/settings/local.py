@@ -24,7 +24,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": str(os.path.join(BASE_DIR, "dbNotifications.sqlite3")), # NOQA
+        "NAME": str(os.path.join(BASE_DIR.parent, "dbNotifications.sqlite3")), # NOQA
     }
     # "default": {
     #     "ENGINE": "mssql",

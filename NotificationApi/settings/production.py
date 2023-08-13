@@ -9,8 +9,7 @@ DEBUG = strtobool(os.getenv('DEBUG', default=False))
 ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
 # CSRF config
-CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]
-
+CSRF_TRUSTED_ORIGINS = [s.strip() for s in os.environ.get('CSRF_TRUSTED_ORIGINS', default="").split(',')]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -35,11 +34,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 
 # CORS Config
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://localhost:3000",
-    "http://localhost:85"
-]
+CORS_ALLOWED_ORIGINS = [s.strip() for s in os.environ.get('CORS_ALLOWED_ORIGINS', default="").split(',')]
 
 
 # NOTIFICATION QUEUE
