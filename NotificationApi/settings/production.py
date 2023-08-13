@@ -36,6 +36,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 # CORS Config
 CORS_ALLOWED_ORIGINS = [s.strip() for s in os.environ.get('CORS_ALLOWED_ORIGINS', default="").split(',')]
 
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "POST",
+    "PUT"]
 
 # NOTIFICATION QUEUE
 NOTIFICATIONS_QUEUE_BATCH = 20
