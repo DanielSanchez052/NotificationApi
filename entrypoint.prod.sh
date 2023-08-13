@@ -1,10 +1,10 @@
 #!/bin/sh
 
 
-python manage.py flush --no-input
-python manage.py collectstatic --noinput
-python manage.py migrate --noinput
+exec python manage.py flush --no-input
+exec python manage.py collectstatic --noinput
+exec python manage.py migrate --noinput
 
-gunicorn --config gunicorn-cfg.py NotificationApi.wsgi
+exec gunicorn --config gunicorn-cfg.py NotificationApi.wsgi
 
 # exec "$@"
