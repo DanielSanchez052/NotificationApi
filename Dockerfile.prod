@@ -54,9 +54,11 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
 # copy entrypoint.prod.sh
-# COPY ./entrypoint.prod.sh .
-# RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
-# RUN chmod +x  $APP_HOME/entrypoint.prod.sh
+COPY ./entrypoint.sh .
+RUN chmod +x  $APP_HOME/entrypoint.sh
+
+COPY ./start.sh .
+RUN chmod +x  $APP_HOME/start.sh
 
 # copy project
 COPY . $APP_HOME
@@ -72,4 +74,8 @@ RUN python manage.py collectstatic --noinput
 
 # CMD  ["sh","/entrypoint.prod.sh"]
 # # gunicorn
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
+# CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/start.sh"]
