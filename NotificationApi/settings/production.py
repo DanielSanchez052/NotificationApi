@@ -1,8 +1,10 @@
 import os
 from NotificationApi.settings.base import * # NOQA
 from decouple import config
+from distutils.util import strtobool
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DEBUG', default=False))
+DEBUG = strtobool(os.getenv('DEBUG', default=False))
 
 ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
