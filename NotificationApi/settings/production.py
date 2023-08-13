@@ -3,8 +3,6 @@ from NotificationApi.settings.base import * # NOQA
 from decouple import config
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DEBUG', default=False))
-print("OS: " + os.environ.get('DEBUG', default=False))
-print("DEBUG: " + DEBUG)
 
 ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
