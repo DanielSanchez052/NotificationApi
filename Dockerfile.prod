@@ -54,9 +54,9 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
 # copy entrypoint.prod.sh
-COPY ./entrypoint.prod.sh .
-RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
-RUN chmod +x  $APP_HOME/entrypoint.prod.sh
+# COPY ./entrypoint.prod.sh .
+# RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
+# RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 # copy project
 COPY . $APP_HOME
@@ -67,9 +67,9 @@ RUN chown -R app:app $APP_HOME
 # change to the app user
 USER app
 
-# RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput
 # RUN python manage.py migrate --noinput
 
-CMD  ["sh","/home/app/NotificationApi/entrypoint.prod.sh"]
+# CMD  ["sh","/home/app/NotificationApi/entrypoint.prod.sh"]
 # # gunicorn
-# CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
+CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
