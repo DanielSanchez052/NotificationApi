@@ -15,7 +15,7 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get("SQL_ENGINE"),
+        'ENGINE': os.environ.get("SQL_ENGINE", default="django.db.backends.mysql"),
         'NAME': os.environ.get("SQL_DATABASE"),
         'HOST': os.environ.get("SQL_HOST"),
         'USER': os.environ.get("SQL_USER"),
