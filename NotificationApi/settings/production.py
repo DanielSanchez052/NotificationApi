@@ -42,7 +42,7 @@ CORS_ALLOW_METHODS = [
 
 # cron-jobs
 CRONJOBS = [
-    ('/*5 * * * *', 'django.core.management.call_command', ['run_queued_notifications'], {}, '>> /home/app/cron/notifications.log 2>&1')
+    ('*/5 * * * *', 'django.core.management.call_command', ['run_queued_notifications'], {}, '>> /home/app/cron/notifications.log 2>&1')
 ]
 
 
