@@ -81,6 +81,6 @@ COPY . $APP_HOME
 # change to the app user
 # USER app
 
-ENTRYPOINT ["/home/app/NotificationApi/entrypoint.sh"]
+# ENTRYPOINT ["/home/app/NotificationApi/entrypoint.sh"]
 
 CMD ["sh", "./start.sh"]
