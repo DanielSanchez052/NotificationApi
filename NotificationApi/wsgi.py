@@ -11,8 +11,7 @@ from distutils.util import strtobool
 
 from django.core.wsgi import get_wsgi_application
 
-
-debug = strtobool(os.environ.get('DEBUG', default=False))
+debug = strtobool(os.environ.get('DEBUG', default="0"))
 settings_module = 'NotificationApi.settings.production' if not debug else 'NotificationApi.settings.local'
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE",

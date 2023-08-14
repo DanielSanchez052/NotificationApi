@@ -4,12 +4,15 @@ from decouple import config
 from distutils.util import strtobool
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = strtobool(os.getenv('DEBUG', default=False))
+DEBUG = strtobool(os.environ.get('DEBUG', default="0"))
 
-ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
+ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="localhost").split(',')]
 
 # CSRF config
-CSRF_TRUSTED_ORIGINS = [s.strip() for s in os.environ.get('CSRF_TRUSTED_ORIGINS', default="").split(',')]
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:85",
+    "http://localhost:85"
+]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
@@ -29,16 +32,11 @@ DATABASES = {
     }
 }
 
-# celery and redis
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-
 # CORS Config
-CORS_ALLOWED_ORIGINS = [s.strip() for s in os.environ.get('CORS_ALLOWED_ORIGINS', default="").split(',')]
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost:85",
+    "http://localhost:85"
+]
 
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -46,6 +44,13 @@ CORS_ALLOW_METHODS = [
     "OPTIONS",
     "POST",
     "PUT"]
+
+
+# cron-jobs
+CRONJOBS = [
+    ('* * * * *', 'django.core.management.call_command', ['run_queued_notifications'], {}, '>> /home/app/cron/notifications.log 2>&1')
+]
+
 
 # NOTIFICATION QUEUE
 NOTIFICATIONS_QUEUE_BATCH = 20

@@ -3,19 +3,12 @@ from NotificationApi.settings.base import * # NOQA
 from decouple import config
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', default=True)
+DEBUG = os.environ.get('DEBUG', default="1")
 
 ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
-# celery and redis
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
 # CSRF config
-# CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85", "http://localhost:5005", "http://127.0.0.1:5005"]
 
 
 # Database
@@ -53,3 +46,38 @@ CORS_ALLOWED_ORIGINS = [
 # EMAIL_PORT = 587
 
 NOTIFICATIONS_QUEUE_BATCH = 20
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': "[{server_time}]%(levelname)s %(message)s"
+        },
+    },
+    'handlers':
+    {
+        'log_to_stdout':
+        {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'main': {
+            'handlers': ['log_to_stdout'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
+}
+
+CRONTAB_COMMAND_PREFIX = (
+    'STAGE=production'
+)
+
+# cron-jobs
+CRONJOBS = [
+    ('* * * * *', 'django.core.management.call_command', ['run_queued_notifications'], {}, '>> /home/app/cron/notifications.log 2>&1')
+]

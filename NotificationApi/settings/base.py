@@ -49,10 +49,10 @@ THIRD_APPS = [
     'drf_yasg',
     'import_export',
     "django_json_widget",
-    # Tasks in background
-    "django_celery_beat",
     # authentication
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
+    # cron-jobs
+    "django_crontab"
 ]
 
 
@@ -141,7 +141,6 @@ MEDIA_LOCATION = os.environ.get('MEDIA_ROOT', default='media')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # STORAGES = {
 #     # ...

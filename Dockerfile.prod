@@ -15,12 +15,14 @@ ENV PYTHONUNBUFFERED 1
 # install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc
+RUN apt-get install cron -y
 
 # lint
 RUN pip install --upgrade pip
 RUN pip install flake8==6.0.0
 COPY . /usr/src/app/
 RUN flake8 --ignore=E501,F401 .
+
 
 # install python dependencies
 COPY ./requirements.txt .
@@ -43,14 +45,23 @@ RUN mkdir -p /home/app
 ENV DEBUG=False
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/NotificationApi
+ENV CRON_LOGS=/home/app/cron
+
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
+
+RUN mkdir $CRON_LOGS
+RUN touch $CRON_LOGS/notifications.log
+
 WORKDIR $APP_HOME
 
 # install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends netcat
+RUN apt-get install cron -y
+
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
+
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
@@ -70,6 +81,6 @@ COPY . $APP_HOME
 # change to the app user
 # USER app
 
-# ENTRYPOINT ["/home/app/NotificationApi/entrypoint.sh"]
+ENTRYPOINT ["/home/app/NotificationApi/entrypoint.sh"]
 
 CMD ["sh", "./start.sh"]

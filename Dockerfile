@@ -1,33 +1,41 @@
 FROM python:3.10.8-slim
 
-#set work directory
+# django-crontab logfile
+RUN mkdir /cron
+RUN touch /cron/django_cron.log
+
+# set work directory
 WORKDIR /code
 
-#set environment variables
+# set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PUTHONDONTWRITEBYTECODE=1
 
-#insall dependencies
+# insall dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends netcat cron
 RUN pip install --upgrade pip
 COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 
 # copy entrypoint.sh
-# COPY ./entrypoint.sh .
-# RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
-# RUN chmod +x /usr/src/app/entrypoint.sh
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' /code/entrypoint.sh
+RUN chmod +x  /code/entrypoint.sh
+
+# copy start.sh
+COPY ./start.sh .
+RUN sed -i 's/\r$//g' /code/start.sh
+RUN chmod +x  /code/start.sh
 
 #copy project
 COPY . /code/
 
-
-# run entrypoint.sh
-# ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-
 # # gunicorn
 # CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
+RUN service cron start 
 
 ENTRYPOINT ["sh","./entrypoint.sh"]
 
+RUN service cron start
 
 CMD ["sh", "./start.sh"]

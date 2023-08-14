@@ -5,7 +5,7 @@ services:
   api:
     restart: always
     container_name: api
-    env_file: .env.prod
+    env_file: NotificationApi/.env
     build: 
       context: ./
       dockerfile: Dockerfile.prod
@@ -14,8 +14,6 @@ services:
       - .:/home/app/NotificationApi
     networks:
       - web_network
-    depends_on:
-      - redis
 
   nginx:
     container_name: nginx
@@ -31,68 +29,9 @@ services:
     depends_on:
       - api
 
-  redis:
-    image: "redis:alpine"
-    networks:
-      - web_network
-  
-  celery:
-    env_file: .env.prod
-    build: 
-      context: ./
-      dockerfile: Dockerfile.prod
-    command: watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A NotificationApi worker --loglevel=info
-    volumes:
-      - .:/home/app/NotificationApi
-    environment:
-      DEBUG: 0
-      CELERY_BROKER_URL: redis://redis:6379
-      CELERY_RESULT_BACKEND: redis://redis:6379
-    networks:
-      - web_network
-    depends_on:
-      - api
-      - redis
-
-  celery-beat:
-    env_file: .env.prod
-    build: 
-      context: ./
-      dockerfile: Dockerfile.prod
-    command: watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A NotificationApi beat -l info
-    volumes:
-      - .:/home/app/NotificationApi
-    environment:
-      DEBUG: 0
-      CELERY_BROKER_URL: redis://redis:6379
-      CELERY_RESULT_BACKEND: redis://redis:6379
-    networks:
-      - web_network
-    depends_on:
-      - api
-      - redis
-
-  celery-flower:
-    env_file: .env.prod
-    build: 
-      context: ./
-      dockerfile: Dockerfile.prod
-    restart: always
-    command: watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A NotificationApi flower --loglevel=DEBUG --port=8888
-    volumes:
-      - .:/home/app/NotificationApi
-    ports:
-      - 8888:8888
-    networks:
-      - web_network
-    depends_on:
-      - api
-      - redis
-
 networks:
   web_network:
     driver: bridge
 
 volumes:
   static_volume:
-  

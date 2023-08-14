@@ -7,7 +7,8 @@ from distutils.util import strtobool
 
 def main():
     """Run administrative tasks."""
-    debug = strtobool(os.environ.get('DEBUG', default=False))
+
+    debug = strtobool(os.environ.get('DEBUG', default="0"))
     settings_module = 'NotificationApi.settings.production' if not debug else 'NotificationApi.settings.local'
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
