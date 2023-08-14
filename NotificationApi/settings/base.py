@@ -80,7 +80,7 @@ ROOT_URLCONF = "NotificationApi.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ['templates'],
+        "DIRS": [os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
