@@ -9,10 +9,7 @@ DEBUG = strtobool(os.environ.get('DEBUG', default="0"))
 ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="localhost").split(',')]
 
 # CSRF config
-CSRF_TRUSTED_ORIGINS = [
-    "https://localhost:85",
-    "http://localhost:85"
-]
+CSRF_TRUSTED_ORIGINS = [s.strip() for s in os.environ.get('CSRF_TRUSTED_ORIGINS').split(',')]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
@@ -33,10 +30,7 @@ DATABASES = {
 }
 
 # CORS Config
-CORS_ALLOWED_ORIGINS = [
-    "https://localhost:85",
-    "http://localhost:85"
-]
+CORS_ALLOWED_ORIGINS = [s.strip() for s in os.environ.get('CORS_ALLOWED_ORIGINS').split(',')]
 
 CORS_ALLOW_METHODS = [
     "DELETE",
