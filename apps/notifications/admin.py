@@ -4,7 +4,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from django_json_widget.widgets import JSONEditorWidget
 
-from apps.notifications.models import Notification, NotificationType, NotificationResults
+from apps.notifications.models import Notification, NotificationType, NotificationResults, NotificationTemplate
 from .forms import NotificationAdminForm, NotificationTypeAdminForm
 from .strategy.strategy import CONFIGURATION_SCHEMA_BASE
 
@@ -67,3 +67,9 @@ class NotificationModelAdmin(admin.ModelAdmin):
     def change_to_canceled(self, request, queryset):
         queryset.update(
             notification_status=Notification.NotificationStatus.CANCELED)
+
+
+@admin.register(NotificationTemplate)
+class NotificationTemplateAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "description", "template_path", "render", "created_at")
+    search_fields = ["id", "description", "name", "template_path"]

@@ -1,3 +1,4 @@
+
 import uuid
 from datetime import datetime
 
@@ -9,7 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from apps.core.models import BaseModel
 from apps.core.exeptions import NotificationException
 from apps.notifications.strategy.context import Context
-from apps.notifications import models as im
+from apps.notifications import models as m
+from .NotificationTemplate import NotificationTemplate
 
 
 class NotificationManager(models.Manager):
@@ -18,7 +20,7 @@ class NotificationManager(models.Manager):
         try:
             result_execution = notificationDb.execute_notification()
 
-            result = im.NotificationResults()
+            result = m.NotificationResults.NotificationResults()
             result.error = False
             result.created_at = datetime.now()
             result.messages = result_execution
@@ -28,7 +30,7 @@ class NotificationManager(models.Manager):
             notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
         except NotificationException as ne:
 
-            result = im.NotificationResults()
+            result = m.NotificationResults.NotificationResults()
             result.error = True
             result.created_at = datetime.now()
             result.messages = f"{ne.message}|{ne}"
@@ -38,7 +40,7 @@ class NotificationManager(models.Manager):
             notificationDb.notification_status = Notification.NotificationStatus.PENDING
         except Exception as ex:
 
-            result = im.NotificationResults()
+            result = m.NotificationResults.NotificationResults()
             result.error = True
             result.created_at = datetime.now()
             result.messages = f"ERROR NAME {type(ex).__name__}, args: {ex.args}, {ex}"
@@ -73,7 +75,9 @@ class Notification(BaseModel):
         choices=NotificationStatus.choices,
         default=NotificationStatus.PENDING)
     notification_type = models.ForeignKey(
-        im.NotificationType, on_delete=models.CASCADE)
+        m.NotificationType, on_delete=models.CASCADE)
+    notification_template = models.ForeignKey(NotificationTemplate, on_delete=models.DO_NOTHING)
+    Source = models.CharField(max_length=150, blank=True, null=True)
     config = models.JSONField(
         'config', blank=False, null=False)
     objects = NotificationManager()

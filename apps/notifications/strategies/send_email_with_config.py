@@ -4,19 +4,25 @@ from django.template.loader import render_to_string
 from ..strategy.strategy import Strategy
 from apps.core.utils import EmailSender
 from apps.core.exeptions import NotificationException
+from apps.notifications.models import Notification
 
 
 class SendEmailWithConfig(Strategy):
     def do_notification(self, settings: Dict, *args, **kwargs):
         self.validate_required_fields(self, settings)
 
-        notification = kwargs["notification"]
+        notification: Notification = kwargs["notification"]
         notification_settings = notification.notification_type.config
 
         email_sender = self.get_emailSender(self, notification_settings)
+        template = notification.notification_template
 
-        html_message = render_to_string(
-            notification_settings["html_template"], settings)
+        message = ""
+        if (template.render):
+            message = render_to_string(template.template_path, settings)
+        else:
+            # TODO:Review this and test if here i can read file and send his content
+            message = template.template_path
 
         email = settings["email"]
         subject = settings["subject"]
@@ -25,7 +31,7 @@ class SendEmailWithConfig(Strategy):
             subject,
             [email],
             '',
-            html_message)
+            message)
 
         return result
 

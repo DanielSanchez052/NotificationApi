@@ -8,7 +8,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.settings import api_settings
 
 from .models import Notification
-from .serializers.general_serializer import NotificationTypeSerializer, NotificationStatusSerializer
+from .serializers.general_serializer import NotificationTypeSerializer, NotificationStatusSerializer, NotificationTemplateSerializer
 from .serializers.NotificationSerializer import NotificationSerializer, NotificationSerializerQueue, NotificationUpdateSerializer
 from apps.core.mixins import SerializerActionMixin
 from apps.core.exeptions import NotificationException
@@ -32,6 +32,11 @@ class GetNotificationStatus(ListAPIView):
         serializer = self.get_serializer(objects, many=True)
 
         return Response(serializer.data)
+
+
+class GetNotificationTemplate(ListAPIView):
+    serializer_class = NotificationTemplateSerializer
+    queryset = serializer_class.Meta.model.objects.all()
 
 
 class NotificationQueueView(SerializerActionMixin, viewsets.GenericViewSet):

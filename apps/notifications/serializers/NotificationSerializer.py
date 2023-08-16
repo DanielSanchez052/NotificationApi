@@ -17,7 +17,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ["id", "description", "user", "notification_status",
+        fields = ["id", "description", "user", "notification_status", "notification_template",
                   "notification_type", "config", "results"]
         read_only_fields = ("results", "id", "notification_status")
 
@@ -45,7 +45,6 @@ class NotificationSerializerQueue(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ["id", "description", "user",
-                  "notification_type", "config"]
+        fields = ["id", "description", "user", "notification_type", "notification_template", "config"]
         read_only_fields = ("id",)
         list_serializer_class = NotificationSerializerQueueList
