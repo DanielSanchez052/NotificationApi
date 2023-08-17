@@ -19,6 +19,11 @@ class NotificationResource(resources.ModelResource):
         model = Notification
 
 
+class NotificationTemplateResource(resources.ModelResource):
+    class Meta:
+        model = NotificationTemplate
+
+
 @admin.register(NotificationType)
 class NotificationTypeModelAdmin(ImportExportModelAdmin):
     list_display = ("id", "name", "is_active")
@@ -46,7 +51,7 @@ class ResultsInline(admin.TabularInline):
 
 
 @admin.register(Notification)
-class NotificationModelAdmin(admin.ModelAdmin):
+class NotificationModelAdmin(ImportExportModelAdmin):
     list_display = ("id", "description", "user", "notification_status", "notification_type", "created_at", "modified_at")
     search_fields = ["id", "description", "user"]
     list_filter = ("id", "notification_status")
@@ -70,6 +75,7 @@ class NotificationModelAdmin(admin.ModelAdmin):
 
 
 @admin.register(NotificationTemplate)
-class NotificationTemplateAdmin(admin.ModelAdmin):
+class NotificationTemplateAdmin(ImportExportModelAdmin):
+    resource_classes = [NotificationTemplateResource]
     list_display = ("id", "name", "description", "template_path", "render", "created_at")
     search_fields = ["id", "description", "name", "template_path"]
