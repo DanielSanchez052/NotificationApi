@@ -79,5 +79,5 @@ CRONTAB_COMMAND_PREFIX = (
 
 # cron-jobs
 CRONJOBS = [
-    ('* * * * *', 'django.core.management.call_command', ['run_queued_notifications'], {}, '>> /home/app/cron/notifications.log 2>&1')
+    ('* * * * *', 'django.core.management.call_command', ['run_queued_notifications'], {}, '>> /cron/django_cron.log2>&1')
 ]

@@ -20,7 +20,7 @@ class NotificationManager(models.Manager):
         try:
             result_execution = notificationDb.execute_notification()
 
-            result = m.NotificationResults.NotificationResults()
+            result = m.NotificationResults()
             result.error = False
             result.created_at = datetime.now()
             result.messages = result_execution
@@ -30,7 +30,7 @@ class NotificationManager(models.Manager):
             notificationDb.notification_status = Notification.NotificationStatus.COMPLETE
         except NotificationException as ne:
 
-            result = m.NotificationResults.NotificationResults()
+            result = m.NotificationResults()
             result.error = True
             result.created_at = datetime.now()
             result.messages = f"{ne.message}|{ne}"
@@ -40,7 +40,7 @@ class NotificationManager(models.Manager):
             notificationDb.notification_status = Notification.NotificationStatus.PENDING
         except Exception as ex:
 
-            result = m.NotificationResults.NotificationResults()
+            result = m.NotificationResults()
             result.error = True
             result.created_at = datetime.now()
             result.messages = f"ERROR NAME {type(ex).__name__}, args: {ex.args}, {ex}"

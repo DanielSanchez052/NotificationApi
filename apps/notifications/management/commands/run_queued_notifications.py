@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 Notification.objects.execute_notification(notification)
 
             except Exception as ex:
-                result_db = notification.result
+                result_db = notification.results
                 if result_db:
                     result = NotificationResults()
                     result.error = True

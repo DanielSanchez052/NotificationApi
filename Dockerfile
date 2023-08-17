@@ -32,9 +32,8 @@ COPY . /code/
 
 # # gunicorn
 # CMD ["gunicorn", "--config", "gunicorn-cfg.py", "NotificationApi.wsgi"]
-RUN service cron start 
 
-ENTRYPOINT ["sh","./entrypoint.sh"]
+# ENTRYPOINT ["sh","./entrypoint.sh"]
 
 RUN service cron start
 
