@@ -2,6 +2,7 @@ import os
 from NotificationApi.settings.base import * # NOQA
 from decouple import config
 from distutils.util import strtobool
+import dj_database_url
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = strtobool(os.environ.get('DEBUG', default="0"))
@@ -18,16 +19,21 @@ CSRF_COOKIE_SECURE = True
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get("SQL_ENGINE", default="django.db.backends.mysql"),
-        'NAME': os.environ.get("SQL_DATABASE"),
-        'HOST': os.environ.get("SQL_HOST"),
-        'USER': os.environ.get("SQL_USER"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD"),
-        'PORT': os.environ.get("SQL_PORT")
+if "DATABASE_URL" in os.environ :
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600),
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("SQL_ENGINE", default="django.db.backends.mysql"),
+            'NAME': os.environ.get("SQL_DATABASE"),
+            'HOST': os.environ.get("SQL_HOST"),
+            'USER': os.environ.get("SQL_USER"),
+            'PASSWORD': os.environ.get("SQL_PASSWORD"),
+            'PORT': os.environ.get("SQL_PORT")
+        }
+    }
 
 # CORS Config
 CORS_ALLOWED_ORIGINS = [s.strip() for s in os.environ.get('CORS_ALLOWED_ORIGINS').split(',')]
