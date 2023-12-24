@@ -28,15 +28,11 @@
           with:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
-        - id: lower-repo
-          shell: pwsh
-          run: |
-            "::set-output name=repository::$($env:GITHUB_REPOSITORY.ToLowerInvariant())"
         - name: Build and push
           uses: docker/build-push-action@v5
           with:
             push: true
-            tags: ghcr.io/${{ steps.lower-repo.outputs.repository }}:${{ github.sha }}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/notification-api:${{ github.sha }}
   
         - name: Push to dokku
           uses: dokku/github-action@master
