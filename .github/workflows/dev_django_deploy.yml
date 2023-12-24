@@ -36,7 +36,7 @@
           uses: docker/build-push-action@v5
           with:
             push: true
-            tags: ${{ steps.lower-repo.outputs.repository }}:${{ github.sha }}
+            tags: ghcr.io/${{ steps.lower-repo.outputs.repository }}:${{ github.sha }}
   
         - name: Push to dokku
           uses: dokku/github-action@master
