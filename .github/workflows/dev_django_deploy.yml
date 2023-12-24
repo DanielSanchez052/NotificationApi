@@ -37,6 +37,8 @@
         - name: Push to dokku
           uses: dokku/github-action@master
           with:
+            git_push_flags: '-vvv'
             git_remote_url: 'ssh://root@137.184.44.82:22/dev-notifications'
             ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
             deploy_docker_image: ${{ github.repository }}:${{ github.sha }}
+            trace: '1'
