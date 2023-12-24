@@ -6,6 +6,7 @@ from apps.core.exeptions import NotificationException
 from apps.notifications.models import Notification
 import resend
 
+
 class SendEmailWithConfig(Strategy):
     def do_notification(self, settings: Dict, *args, **kwargs):
         self.validate_required_fields(self, settings)
@@ -14,9 +15,7 @@ class SendEmailWithConfig(Strategy):
         notification_settings: Dict = notification.notification_type.config
 
         resend.api_key = notification_settings.get("API_KEY")
-        
         template = notification.notification_template
-
         message = ""
         if (template.render):
             message = render_to_string(template.template_path, settings)
@@ -38,4 +37,3 @@ class SendEmailWithConfig(Strategy):
         if not all(field in settings.keys() for field in fields_required):
             raise NotificationException(
                 message="el email y el asunto son requeridos")
-

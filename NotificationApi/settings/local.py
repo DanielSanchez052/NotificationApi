@@ -8,7 +8,7 @@ DEBUG = os.environ.get('DEBUG', default="1")
 ALLOWED_HOSTS = [s.strip() for s in os.environ.get('ALLOWED_HOSTS', default="").split(',')]
 
 # CSRF config
-CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85", "http://localhost:5005", "http://127.0.0.1:5005"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:85", "http://127.0.0.1:85", "http://localhost:8000", "http://127.0.0.1:8000", "http://localhost:5005", "http://127.0.0.1:5005"]
 
 
 # Database
